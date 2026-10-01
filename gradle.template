@@ -1,0 +1,65 @@
+plugins {
+	id 'java'
+	id 'jacoco'
+        id 'application'
+}
+
+//MAIN_CLASS
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+  testRuntimeOnly("org.junit.platform:junit-platform-launcher");
+  testImplementation('org.junit.jupiter:junit-jupiter:5.11.0')
+  implementation('org.junit.jupiter:junit-jupiter:5.11.0')
+        //IMP_FILES
+}
+
+jacoco {
+  toolVersion="0.8.12"
+  reportsDirectory = file("$buildDir/customJacocoReportDir")
+}
+
+test {
+	useJUnitPlatform()
+	testLogging {
+		events "passed", "skipped", "failed"
+	}
+        finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+	dependsOn test
+	reports {
+    xml.required=false
+    csv.required=true
+	}
+}
+
+sourceSets {
+   main {
+      java {
+        srcDirs=["SRC_DIR","main/java"]
+      }
+   }
+   test {
+      java {
+        srcDirs=["SRC_DIR","test/java"]
+      }
+   }
+      
+task sourceSetProperties {
+  sourceSets {
+     main {
+       println "java.srcDirs = ${java.srcDirs}"
+       println "resources.srcDirs = ${resources.srcDirs}"
+       println "java.files = ${java.files.name}"
+       println "allJava.files = ${allJava.files.name}"
+       println "resources.files = ${resources.files.name}"
+       println "allSource.files = ${allSource.files.name}"
+    }
+  }
+}
+}
